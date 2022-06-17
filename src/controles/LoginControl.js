@@ -1,11 +1,9 @@
 const bcrypt = require("bcrypt")
 
 function login(req,res){
-    console.log("pippo")
     if (req.session.loggedin != true){
         res.render("login/index");
     } else {
-        console.log("pippo")
         res.redirect('/');
     }    
 }
@@ -14,7 +12,6 @@ function registro(req,res){
     if (req.session.loggedin != true){
         res.render("login/registro");
     } else {
-        console.log("pippo")
         res.redirect('/');
     }    
 }
@@ -53,7 +50,6 @@ function registraUsuario(req,res){
 
 
 function auth(req, res) {
-    console.log('hrllo')
     const data = req.body;
     //console.log(data)
     req.getConnection((err, conn) => {

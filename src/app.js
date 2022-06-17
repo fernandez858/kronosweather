@@ -48,12 +48,15 @@ app.listen(app.get('port'),() => {
 app.use('/',loginRutas)
 
 
+app.get('/mapa',(req,res) => {
+    const name = "Hola desde el mapa"
+    res.render("mapa");     
+});
+
+
 
 app.get('/',(req,res) => {
-    console.log('Im wow')
-    console.log(req.session.loggedin)
     if (req.session.loggedin){
-        console.log('Im here')
         let name = req.session.name;
         res.render("home", {name});
         
