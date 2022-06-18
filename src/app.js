@@ -6,6 +6,8 @@ const session = require('express-session')
 const bodyParser = require('body-parser')
 const loginRutas = require('./rutas/login')
 const app = express()
+const path = require('path')
+
 
 app.set('port', 4000)
 
@@ -20,8 +22,9 @@ app.set('view engine', 'hbs');
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-
-
+console.log(__dirname)
+//static files
+app.use(express.static(path.join(__dirname,'public')))
 
 app.use(bodyParser.json())
 
@@ -49,8 +52,13 @@ app.use('/',loginRutas)
 
 
 app.get('/mapa',(req,res) => {
-    const name = "Hola desde el mapa"
-    res.render("mapa");     
+    if (req.session.loggedin){
+        let name = req.session.name;
+        res.render("mapa", {name});
+        
+    } else {
+        res.redirect('/login');
+    }
 });
 
 

@@ -12,6 +12,7 @@ router.post('/registro', LoginControl.registraUsuario);
 router.get('/logout', LoginControl.logout);
 
 router.post('/guarda_cordenada', ControlFavoritos.registraCordenadas);
+router.get('/test_cords', ControlFavoritos.meteoCordenadas);
 
 module.exports = router;
 
