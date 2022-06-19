@@ -21,12 +21,12 @@ function registraCordenadas(req, res) {
                 "usuario": req.session.name,
                 //"ciudad": response2.data.data[0].label,
                 'ciudad': response2.data.data[0].label,
-                'countrycode':  response2.data.data[0].country_code,
+                'countrycode': response2.data.data[0].country_code,
                 'country': response2.data.data[0].country,
                 "lat": data.lat,
                 "lon": data.lon
             };
-            
+
             console.log(dataRegistro.ciudad)
 
             req.getConnection((err, conn) => {
@@ -42,24 +42,20 @@ function registraCordenadas(req, res) {
 }
 
 
-function meteoCordenadas(req, res) {
-    //const data = req.body
-    const lat = 33.44
-    const lon = -94.04
-    var ciudades = []
 
-    // usr_input = req.session.name
-    usr_input = 'fernandez858@gmail.com'
-    // Get all ciudades for current user
-    req.getConnection((err, conn) => {
-        conn.query('SELECT * FROM favoritos WHERE usuario = ?', [usr_input], (err, userdata) => {
-            if (userdata.length > 0) {
-                for (const row of userdata) {
-                    //console.log(row.lat)
-                    //apicall = `https://api.openweathermap.org/data/3.0/onecall?lat=33.44&lon=-94.04&exclude=hourly,daily&appid=${APIKeys.owm}`
+function dbtoMeteo(rows) {
+    return new Promise((resolve2, reject) => {
+        var ciudades = []
+        var ciudPromises = []
+        console.log('Length of db:' + rows.length)
+        for (const row of rows) {
+            //console.log(row.lat)
+            //apicall = `https://api.openweathermap.org/data/3.0/onecall?lat=33.44&lon=-94.04&exclude=hourly,daily&appid=${APIKeys.owm}`
+
+            //console.log(data);
+            ciudPromises.push(
+                new Promise((resolve, reject) => {
                     apicall = `https://api.openweathermap.org/data/2.5/weather?lat=${row.lat}&lon=${row.lon}&units=metric&lang=es&appid=${APIKeys.owm}`
-                    //console.log(data);
-
                     axios.get(apicall)
                         .then(function (response) {
                             // console.log(response);
@@ -75,25 +71,79 @@ function meteoCordenadas(req, res) {
                                 icon: response.data.weather[0].icon,
                                 name: row.ciudad
                             }
-
-                            console.log(ciudad);
-                            ciudades.push(ciudad)
-                        })    
-                        .catch(function (error) {
-                            console.log(error);
+                            resolve(ciudad)
                         })
-                     
-                        
-                }
 
+                })
+            )
 
-            }
-        })    
-        
+            Promise.all(ciudPromises)
+                .then((cds) => {
+                    //console.log(cds)
+                    resolve2(cds)
+                })
+
+            // ciudades.push(ciudad)
+        }
 
     })
 
-    
+
+
+}
+
+function getCiudadesFavoritas(req, res) {
+    return new Promise(
+        (resolve, reject) => {
+            var ciudades = []
+            req.getConnection((err, conn) => {
+                usr_input = 'fernandez858@gmail.com'
+                conn.query('SELECT * FROM favoritos WHERE usuario = ?', [usr_input], (err, userdata) => {
+
+
+                    resolve(userdata)
+                })
+            })
+
+        }
+
+    )
+
+}
+
+function meteoCordenadas(req, res) {
+    //const data = req.body
+    const lat = 33.44
+    const lon = -94.04
+
+
+    // usr_input = req.session.name
+    usr_input = 'fernandez858@gmail.com'
+    // Get all ciudades for current user
+
+    console.log('Hola 1')
+    // aFunction().then(res.send);
+    getCiudadesFavoritas(req, res)
+        .then(dbtoMeteo)
+        .then(cds => {
+            console.log(cds)
+            res.send(cds)
+         })
+    /*getCiudadesFavoritas(req, res).then(myArray => {
+        console.log('Resultado from Promise')
+        console.log(myArray)
+
+        cds = dbtoMeteo(myArray)
+
+
+        //res.send(myArray)
+        console.log(cds)
+        res.send(cds)
+    })
+    */
+    //const ciuddd =  obtenciudades(usr_input, req,res)
+
+
 }
 
 module.exports = {
