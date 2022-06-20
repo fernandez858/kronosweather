@@ -1,5 +1,6 @@
 const session = require("express-session");
-const axios = require('axios')
+const axios = require('axios');
+const { MemoryStore } = require("express-session");
 
 
 const APIKeys = {
@@ -43,12 +44,15 @@ function registraCordenadas(req, res) {
 
 
 
-function dbtoMeteo(rows) {
-    return new Promise((resolve2, reject) => {
+const dbtoMeteo = (rows) => {
+
         var ciudades = []
         var ciudPromises = []
         console.log('Length of db:' + rows.length)
-        for (const row of rows) {
+        //console.log(rows)
+        //for (const row of rows) {
+        rows.forEach(row => {            
+        
             //console.log(row.lat)
             //apicall = `https://api.openweathermap.org/data/3.0/onecall?lat=33.44&lon=-94.04&exclude=hourly,daily&appid=${APIKeys.owm}`
 
@@ -70,23 +74,20 @@ function dbtoMeteo(rows) {
                                 tiempo_desc: response.data.weather[0].description,
                                 icon: response.data.weather[0].icon,
                                 name: row.ciudad
-                            }
+                            }   
+                            //console.log(ciudad)                         
                             resolve(ciudad)
                         })
 
                 })
             )
-
-            Promise.all(ciudPromises)
-                .then((cds) => {
-                    //console.log(cds)
-                    resolve2(cds)
-                })
-
+        
+           
             // ciudades.push(ciudad)
-        }
-
-    })
+        });
+        console.log(ciudPromises)
+        return  Promise.all(ciudPromises)
+            
 
 
 
@@ -122,6 +123,7 @@ function meteoCordenadas(req, res) {
     // Get all ciudades for current user
 
     console.log('Hola 1')
+
     // aFunction().then(res.send);
     getCiudadesFavoritas(req, res)
         .then(dbtoMeteo)
