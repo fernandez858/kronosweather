@@ -75,7 +75,7 @@ const dbtoMeteo = (rows) => {
                                 icon: response.data.weather[0].icon,
                                 name: row.ciudad
                             }   
-                            //console.log(ciudad)                         
+                            console.log(ciudad)                         
                             resolve(ciudad)
                         })
 
@@ -118,18 +118,15 @@ function meteoCordenadas(req, res) {
     const lon = -94.04
 
 
-    // usr_input = req.session.name
-    usr_input = 'fernandez858@gmail.com'
-    // Get all ciudades for current user
 
-    console.log('Hola 1')
 
     // aFunction().then(res.send);
     getCiudadesFavoritas(req, res)
         .then(dbtoMeteo)
         .then(cds => {
             console.log(cds)
-            res.send(cds)
+            //res.send(cds)
+            res.render("home", {usrname: req.session.name, ciudades: cds});
          })
     /*getCiudadesFavoritas(req, res).then(myArray => {
         console.log('Resultado from Promise')
@@ -150,6 +147,8 @@ function meteoCordenadas(req, res) {
 
 module.exports = {
     registraCordenadas,
-    meteoCordenadas
+    meteoCordenadas,
+    getCiudadesFavoritas,
+    dbtoMeteo
 }
  //guarda_cordenada
