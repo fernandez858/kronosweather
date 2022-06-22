@@ -28,7 +28,7 @@ function registraCordenadas(req, res) {
                 "lon": data.lon
             };
 
-            console.log(dataRegistro.ciudad)
+            //console.log(dataRegistro.ciudad)
 
             req.getConnection((err, conn) => {
                 conn.query('INSERT INTO favoritos SET ?', [dataRegistro], (err, rows) => {
@@ -38,9 +38,19 @@ function registraCordenadas(req, res) {
         })
 
 
-
-
 }
+
+
+function removeCordenadas(idfav,source_path,req, res) {
+    const data = req.body  
+            req.getConnection((err, conn) => {
+                conn.query('DELETE FROM favoritos WHERE ciudad = ?', [idfav], (err, rows) => {
+                    res.redirect(`/${source_path}`);
+                });
+            });
+}
+
+
 
 
 
@@ -126,7 +136,7 @@ function meteoCordenadas(req, res) {
         .then(cds => {
             console.log(cds)
             //res.send(cds)
-            res.render("home", {usrname: req.session.name, ciudades: cds});
+            res.render("home", {usrname: req.session.name, ciudades: cds, sourcepath: "home"});
          })
     /*getCiudadesFavoritas(req, res).then(myArray => {
         console.log('Resultado from Promise')
@@ -147,6 +157,7 @@ function meteoCordenadas(req, res) {
 
 module.exports = {
     registraCordenadas,
+    removeCordenadas,
     meteoCordenadas,
     getCiudadesFavoritas,
     dbtoMeteo

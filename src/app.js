@@ -1,5 +1,5 @@
 const express = require('express');
-const {engine} = require('express-handlebars')
+const { engine } = require('express-handlebars')
 const myconnection = require('express-myconnection')
 const mysql = require('mysql');
 const session = require('express-session')
@@ -11,9 +11,9 @@ const ControlFavoritos = require('./controles/ControlFavoritos');
 
 app.set('port', 4000)
 
-app.set('views',__dirname + '/vistas')
+app.set('views', __dirname + '/vistas')
 
-app.engine('.hbs',engine({
+app.engine('.hbs', engine({
     extname: '.hbs'
 }));
 
@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({
 }));
 console.log(__dirname)
 //static files
-app.use(express.static(path.join(__dirname,'public')))
+app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(bodyParser.json())
 
@@ -43,47 +43,84 @@ app.use(session({
 }));
 
 
-app.listen(app.get('port'),() => {
+app.listen(app.get('port'), () => {
     console.log('Listenin on port ', app.get('port'));
 });
 
 
-app.use('/',loginRutas)
+app.use('/', loginRutas)
 
 
-app.get('/mapa',(req,res) => {
-    if (req.session.loggedin){
+app.get('/apiold', (request, response) => {
+
+    request.getConnection((err, conn) => {
+
+        if (err) {
+            response.end();
+            return;
+        }
+
+        usr_input = 'fernandez858@gmail.com'
+        conn.query('SELECT * FROM favoritos WHERE usuario = ?', [usr_input], (err, userdata) => {
+            console.log(userdata)
+            response.json(userdata);
+        })
+    })
+
+});
+
+
+app.get('/api', (request, response) => {
+
+    ControlFavoritos.getCiudadesFavoritas(request, response)
+    .then(ControlFavoritos.dbtoMeteo)
+    .then(cds => {
+        //console.log(cds)
+        //res.send(cds)
+        response.json(cds);
+    })
+            
+});
+
+
+app.get('/mapa', (req, res) => {
+    if (req.session.loggedin) {
         let name = req.session.name;
         //res.render("mapa", {name});
         ControlFavoritos.getCiudadesFavoritas(req, res)
-        .then(ControlFavoritos.dbtoMeteo)
-        .then(cds => {
-            console.log(cds)
-            //res.send(cds)
-            res.render("mapa", {name: req.session.name, ciudades: cds});
-         })
-    //getCiudadesF
-        
+            .then(ControlFavoritos.dbtoMeteo)
+            .then(cds => {
+                //console.log(cds)
+                //res.send(cds)
+                res.render("mapa", { name: req.session.name, ciudades: cds, sourcepath: 'mapa' });
+            })
+        //getCiudadesF
+
     } else {
         res.redirect('/login');
     }
 });
 
+app.get('/delete_favorite', (req, res) => {
+
+    ControlFavoritos.removeCordenadas(req.query.id, req.query.source, req, res)
+})
 
 
-app.get('/',(req,res) => {
-    if (req.session.loggedin){
+
+app.get('/', (req, res) => {
+    if (req.session.loggedin) {
         let name = req.session.name;
-        ControlFavoritos.meteoCordenadas(req, res) 
-       /* ControlFavoritos.getCiudadesFavoritas(req, res)
-        .then(ControlFavoritos.dbtoMeteo)
-        .then(cds => {
-            console.log(cds)
-            res.render("home", {usrname: name, ciudades: cds});
-         })*/
+        ControlFavoritos.meteoCordenadas(req, res)
+        /* ControlFavoritos.getCiudadesFavoritas(req, res)
+         .then(ControlFavoritos.dbtoMeteo)
+         .then(cds => {
+             console.log(cds)
+             res.render("home", {usrname: name, ciudades: cds});
+          })*/
 
-        
-        
+
+
     } else {
         res.redirect('/login');
     }
