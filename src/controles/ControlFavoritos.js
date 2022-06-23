@@ -108,7 +108,7 @@ function getCiudadesFavoritas(req, res) {
         (resolve, reject) => {
             var ciudades = []
             req.getConnection((err, conn) => {
-                usr_input = 'fernandez858@gmail.com'
+                usr_input = req.session.name
                 conn.query('SELECT * FROM favoritos WHERE usuario = ?', [usr_input], (err, userdata) => {
 
 

@@ -60,7 +60,7 @@ app.get('/apiold', (request, response) => {
             return;
         }
 
-        usr_input = 'fernandez858@gmail.com'
+        usr_input = req.session.name
         conn.query('SELECT * FROM favoritos WHERE usuario = ?', [usr_input], (err, userdata) => {
             console.log(userdata)
             response.json(userdata);
