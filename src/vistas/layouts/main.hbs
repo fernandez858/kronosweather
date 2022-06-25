@@ -1,48 +1,65 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Applicacion Tiempo Kronos</title>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Tailwind CSS Link -->
-    <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.0.1/tailwind.min.css">
+  <title>Tiempo Kronos</title>
 
-    <!-- Fontawesome Link -->
-    <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
+  <!-- Tailwind CSS Link -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.0.1/tailwind.min.css">
 
-  </head>
-  <body class="bg-gray-200">
-    <nav class="flex py-5 bg-green-500 text-white px-24">
-      <div class="w-1/2 px-12 mr-auto">
-        <h1 class="text-2xl font-bold">Kronos Tiempo</h1>
-      </div>
+  <!-- Fontawesome Link -->
+  <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
+  <!-- leaflrt stuff -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+    integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+    crossorigin="" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+  <!-- Make sure you put this AFTER Leaflet's CSS -->
+  <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+    integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+    crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <link rel="stylesheet" href="/css/main.css">
+</head>
 
-      <ul class="w-1/2 px-16 ml-auto flex justify-end pt-1">
-        {{#if name}}
-        <p>{{name}}</p>
+<body class="bg-gray-200">
+  <nav class="flex py-5 bg-green-500 text-white px-24">
+    <div class="w-1/2 px-12 mr-auto">
+      <a href="/" class="text-2xl font-bold">Kronos Tiempo</a>
+    </div>
 
-        <li class="nav-item px-4">
-          <a href="/logout" class="nav-link font-semibold bg-red-500 hover:bg-red-700 py-3 px-4 rounded-md">Logout</a>
-        </li>
+    <ul class="w-1/2 px-16 ml-auto flex justify-end pt-1">
+      <li class="nav-item px-4">
+        <a href="/mapa" class="nav-link font-semibold bg-yellow-500 hover:bg-yellow-700 py-3 px-4 rounded-md">Mapa</a>
+      </li>
+      {{#if name}}
+      <p>{{name}}</p>
 
-        {{else}}
-        <li class="nav-item px-4">
-          <a href="/login" class="nav-link font-semibold hover:bg-green-700 py-3 px-4 rounded-md">Login</a>
-        </li>
 
-        <li class="nav-item px-4">
-          <a href="/registro" class="nav-link font-semibold border-2 border-white hover:bg-white hover:text-green-700 py-3
+
+      <li class="nav-item px-4">
+        <a href="/logout" class="nav-link font-semibold bg-red-500 hover:bg-red-700 py-3 px-4 rounded-md">Logout</a>
+      </li>
+
+      {{else}}
+      <li class="nav-item px-4">
+        <a href="/login" class="nav-link font-semibold hover:bg-green-700 py-3 px-4 rounded-md">Login</a>
+      </li>
+
+      <li class="nav-item px-4">
+        <a href="/registro" class="nav-link font-semibold border-2 border-white hover:bg-white hover:text-green-700 py-3
             px-4 rounded-md">Registrarse</a>
-        </li>
-        {{/if}}
-      </ul>
-    </nav>
+      </li>
+      {{/if}}
+    </ul>
+  </nav>
 
-    {{{body}}}
+  {{{body}}}
 
 
-  </body>
+</body>
+
 </html>
